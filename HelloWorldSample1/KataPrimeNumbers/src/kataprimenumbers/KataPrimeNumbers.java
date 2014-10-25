@@ -18,14 +18,7 @@ public class KataPrimeNumbers {
     public static void main(String[] args) {
         // TODO code application logic here
         
-        int start = 2;
-        for(int i=start; i<Integer.MAX_VALUE; i++){
-            if(Primes.isPrime(i)){
-                start=i;
-                
-            }
-        }
-        System.out.println("Greates prime number of integers is "+start);
+        System.out.println("Greates prime number of integers is "+Primes.previousPrime(Integer.MAX_VALUE));
     }
     
 }

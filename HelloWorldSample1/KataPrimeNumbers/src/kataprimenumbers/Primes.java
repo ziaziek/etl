@@ -39,4 +39,17 @@ public class Primes {
         }
         return r;
     }
+    
+    /**
+     * Finds the greatest prime number less than the given maximum value
+     * @param maxValue
+     * @return 
+     */
+    public static int previousPrime(int maxValue){
+        int r =maxValue-1;
+        while(r>1 && !Primes.isPrime(r)){
+            r--;
+        }
+        return r;
+    }
 }
