@@ -21,9 +21,11 @@ public class KataPrimeNumbers {
         int start = 2;
         for(int i=start; i<Integer.MAX_VALUE; i++){
             if(Primes.isPrime(i)){
-                System.out.println(i+",");
+                start=i;
+                
             }
         }
+        System.out.println("Greates prime number of integers is "+start);
     }
     
 }

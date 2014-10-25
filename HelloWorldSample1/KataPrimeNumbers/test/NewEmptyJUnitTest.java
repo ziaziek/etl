@@ -47,15 +47,17 @@ public class NewEmptyJUnitTest {
     public void isPrime(){
         int[] primesToBe = new int[]{1, 2, 3, 5, 17, 23, 101, 7907, 18232943};
         for(int i=0;i<primesToBe.length-1;i++){
-          Assert.assertTrue(Primes.isPrime(primesToBe[i]));  
+          Assert.assertTrue(String.valueOf(primesToBe[i]),Primes.isPrime(primesToBe[i]));  
         }    
+        Assert.assertFalse(Primes.isPrime(14));
     }
     
     @Test
     public void nextPrime(){
-        Assert.assertEquals(2, Primes.nextPrime(1));
+        Assert.assertEquals(5, Primes.nextPrime(4));
         Assert.assertEquals(11, Primes.nextPrime(10));
         Assert.assertEquals(17, Primes.nextPrime(13));
         Assert.assertEquals(7919, Primes.nextPrime(7907));
     }
+    
 }
