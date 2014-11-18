@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2014-11-16 20:23:20 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="data.Ftpuser" table="FTPUSER" schema="PRZEMO" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="ID" precision="5" scale="0" />
+            <generator class="assigned" />
+        </id>
+        <property name="idklirnta" type="string">
+            <column name="IDKLIRNTA" length="25" not-null="true" />
+        </property>
+        <property name="email" type="string">
+            <column name="EMAIL" length="50" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

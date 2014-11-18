@@ -1,0 +1,34 @@
+Aplikacja ta jest ćwiczeniem na podstawie zlecenia znalezionego w Oferii w listopadzie 2014 roku.
+
+Treść ogłoszenia:
+--------------------
+Zlecę wykonanie aplikacji do wysyłania plików na serwer ftp
+
+ 
+
+Opis 
+
+- klient może aplikację pobrać i zainstalować - automatycznie tworzy sie ikonka na pulpicie
+
+- aby wysłać pliki klient wprowadza swoje dane - tj maila lub numer klienta z którym związany jest katalog na serwerze ftp  (wcześniej otrzymuje 
+dane do logowania w inny sposób)
+
+- po wysłaniu aplikacja informuje informuje że pliki zostały wysłane i wysyła maila informacyjnego w zależeności od ID klienta (tabela ID - mail) 
+-------------------------
+
+Technologia:
+Java application, Apache Common Net library
+FTP Server (FileZilla przy developmencie)
+Serwer bazy danych przechowujący informacje o klientach, ich emailach i katalogach docelowych (Derby w developmencie).
+
+Opis prepływu działań.
+1. Tworzy się nowe konto klienta na serwerze FTP oraz zakłada mu katalog
+2. W bazie danych wpisuje się te dane oraz dołącza email.
+3. Po stronie klienta odpala się aplikację kliencką.
+4. Klient wczytuje konfigurację z adresami serwera FTP i bazy danych
+5. Użytkownik wprowadza dane do logowania otrzymane wcześniej.
+6. Klient łączy się z serwerem FTP i uwierzytelnia użytkownika.
+7. Jeśli użytkownik został uwierzytelniony, wylistowuje się jego katalog i pozwala na manipulacje.
+7a Klient łączy się z bazą danych pobierając dane użytkownika zalogowanego, pozwalając mu jednocześnie na edycję swoich danych.
+8. Użytkownik uploaduje plik.
+9. Po ukończeniu operacji, zapisujemy to w bazie danych oraz przesyłamy na adres email wiadomość o tym fakcie wraz ze statusem operacji.

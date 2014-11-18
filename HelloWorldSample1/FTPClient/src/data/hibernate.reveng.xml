@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
+<hibernate-reverse-engineering>
+  <schema-selection match-schema="PRZEMO"/>
+  <table-filter match-name="OPERATION"/>
+  <table-filter match-name="LOGINHISTORY"/>
+  <table-filter match-name="OPERATIONSTATUS"/>
+  <table-filter match-name="FTPUSER"/>
+</hibernate-reverse-engineering>
