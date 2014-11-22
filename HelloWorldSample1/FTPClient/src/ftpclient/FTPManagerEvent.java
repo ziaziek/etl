@@ -11,6 +11,11 @@ package ftpclient;
  */
 public class FTPManagerEvent {
  
+    public static final String EVENT_LOGIN_ACTION="Login";
+    
+    public static final String EVENT_UPLOAD_ACTION="Upload";
+    
+    
     public String action;
     
     public Object result;

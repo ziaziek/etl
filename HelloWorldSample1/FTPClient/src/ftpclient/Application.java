@@ -25,7 +25,7 @@ public class Application {
             ftpmngr.setDb(new DatabaseProxy());
             ftpmngr.LogIn("asia.klich@gmail.com", "derek");
             
-            //ftpmngr.UploadFile("csb.log", new java.io.BufferedInputStream(new java.io.FileInputStream("D:/TheFile.txt")) );
+            ftpmngr.UploadFile("csb.log", new java.io.BufferedInputStream(new java.io.FileInputStream("D:/TheFile.txt")) );
             
         } catch (IOException ex) {
             Logger.getLogger(Application.class.getName()).log(Level.SEVERE, null, ex);

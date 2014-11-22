@@ -71,13 +71,23 @@ public class DatabaseProxy implements IFTPManagerListener {
     @Override
     public void registerAction(FTPManagerEvent evt) {
         if(evt!=null && s.isOpen()){
-            if(evt.action.equals("Login")){
-                Transaction tx = s.beginTransaction();
-                Loginhistory lgh = new Loginhistory(getNewId("Loginhistory"), (int)evt.details, new Date(), 2, 1, new Date());
-                s.save(lgh);
-                tx.commit();
+            int idOperation=0;
+            if(evt.action.equals(FTPManagerEvent.EVENT_LOGIN_ACTION)){
+                idOperation=2;             
+            } else {
+                if(evt.action.equals(FTPManagerEvent.EVENT_UPLOAD_ACTION)){
+                    idOperation=1;
+                }
             }
+            logAction(evt, idOperation);
         }
+    }
+
+    private void logAction(FTPManagerEvent evt, int idOperation) {
+        Transaction tx = s.beginTransaction();
+        Loginhistory lgh = new Loginhistory(getNewId("Loginhistory"), (int)evt.details, new Date(), idOperation, (int)evt.result, new Date());
+        s.save(lgh);
+        tx.commit();
     }
     
     private int getNewId(String classname){

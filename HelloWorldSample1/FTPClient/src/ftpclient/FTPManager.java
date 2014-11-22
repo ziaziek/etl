@@ -67,20 +67,22 @@ public class FTPManager {
     public boolean LogIn(String username, String password) {
         if(client.isConnected()){
             try {
-                if(client.login(username, password)){
-                    Ftpuser usr;
-                    if ((usr = db.findUser(username)) != null) {
-                        uid = usr.getId();
-                        FTPManagerEvent ev = new FTPManagerEvent();
-                        ev.action = "Login";
-                        ev.result=1;
-                        ev.details=uid;
-                        notifyListeners(ev);
-                    }
-
+                FTPManagerEvent ev = new FTPManagerEvent();
+                ev.action = FTPManagerEvent.EVENT_LOGIN_ACTION;
+                ev.result = 2; //rejected
+                Ftpuser usr = db.findUser(username);
+                if (usr != null) {
+                    uid = usr.getId();
+                    ev.result = 1;
+                    ev.details = uid;
                 }
-                
-                return true;
+                if (client.login(username, password) && usr != null) {
+                    ev.result = 1; //accepted
+                    notifyListeners(ev);
+                    return true;
+                } else {
+                    return false;
+                }             
             } catch (IOException ex) {
                 Logger.getLogger(FTPManager.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
@@ -103,21 +105,29 @@ public class FTPManager {
     }
 
     public boolean UploadFile(String name, InputStream object) {
+        boolean result=false;
         if(client.isConnected()){
-            try {
-                if(!client.storeFile(name, object)){
-                    //do something with the response code
-                    return false;
-                } else {
-                    return true;
+            FTPManagerEvent evt = new FTPManagerEvent();
+            evt.action=FTPManagerEvent.EVENT_UPLOAD_ACTION;
+            evt.details=uid;
+            evt.result=2; //rejected
+            try {               
+                result=client.storeFile(name, object);
+                if(result){
+                    evt.result=1; //accepted
+                    if(!sendUserMail()){
+                        Logger.getLogger(FTPManager.class.getName()).log(Level.WARNING, null, new Throwable(){
+                            
+                        });
+                    }
                 }
             } catch (IOException ex) {
                 Logger.getLogger(FTPManager.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
-        }
-        
-        return false;
+            notifyListeners(evt);
+        }      
+        return result;
     }
 
     public boolean sendUserMail() {
