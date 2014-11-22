@@ -1,0 +1,7 @@
+22/11/2014
+Uploading a file action registration in the DB. +
+Unsuccesfull action registration. +
+Link succesfull uploading with sending an email. +
+Add description of what file has been uploaded.
+Build a GUI for the app (another project or package)
+Production implementation of the solution.
