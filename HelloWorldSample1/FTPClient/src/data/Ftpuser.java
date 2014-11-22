@@ -1,5 +1,5 @@
 package data;
-// Generated 2014-11-16 20:23:20 by Hibernate Tools 4.3.1
+// Generated 2014-11-22 00:30:39 by Hibernate Tools 4.3.1
 
 
 

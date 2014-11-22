@@ -7,7 +7,11 @@ package ftpclient;
 
 import data.Ftpuser;
 import data.HibernateUtil;
+import data.Loginhistory;
+import java.util.Date;
+import java.util.List;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -56,12 +60,33 @@ public class DatabaseProxy implements IFTPManagerListener {
     
     
     public Ftpuser findUser(String clientId){
-        return  (Ftpuser)s.createQuery("from Ftpuser where idklirnta="+clientId);
+        List users = s.createQuery("from Ftpuser where idklirnta='"+clientId+"'").list();
+        if (users !=null && users.size()>0){
+          return  (Ftpuser)users.get(0);  
+        } else {
+            return null;
+        }
     }
     
     @Override
     public void registerAction(FTPManagerEvent evt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(evt!=null && s.isOpen()){
+            if(evt.action.equals("Login")){
+                Transaction tx = s.beginTransaction();
+                Loginhistory lgh = new Loginhistory(getNewId("Loginhistory"), (int)evt.details, new Date(), 2, 1, new Date());
+                s.save(lgh);
+                tx.commit();
+            }
+        }
+    }
+    
+    private int getNewId(String classname){
+        int id=0;
+                List<Integer> ids = s.createQuery("select max(id) from "+classname).list();
+                if(ids!=null && ids.size()>0 && ids.get(0)!=null){
+                    id=ids.get(0);
+                }
+        return id+1;
     }
     
 }

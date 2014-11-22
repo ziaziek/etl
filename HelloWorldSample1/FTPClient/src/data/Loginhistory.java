@@ -1,5 +1,5 @@
 package data;
-// Generated 2014-11-16 20:23:20 by Hibernate Tools 4.3.1
+// Generated 2014-11-22 00:30:39 by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -15,6 +15,7 @@ public class Loginhistory  implements java.io.Serializable {
      private Date logintime;
      private int idoperation;
      private int idoperationstatus;
+     private Date datetime;
 
     public Loginhistory() {
     }
@@ -26,12 +27,13 @@ public class Loginhistory  implements java.io.Serializable {
         this.idoperation = idoperation;
         this.idoperationstatus = idoperationstatus;
     }
-    public Loginhistory(int id, int idftpuser, Date logintime, int idoperation, int idoperationstatus) {
+    public Loginhistory(int id, int idftpuser, Date logintime, int idoperation, int idoperationstatus, Date datetime) {
        this.id = id;
        this.idftpuser = idftpuser;
        this.logintime = logintime;
        this.idoperation = idoperation;
        this.idoperationstatus = idoperationstatus;
+       this.datetime = datetime;
     }
    
     public int getId() {
@@ -68,6 +70,13 @@ public class Loginhistory  implements java.io.Serializable {
     
     public void setIdoperationstatus(int idoperationstatus) {
         this.idoperationstatus = idoperationstatus;
+    }
+    public Date getDatetime() {
+        return this.datetime;
+    }
+    
+    public void setDatetime(Date datetime) {
+        this.datetime = datetime;
     }
 
 

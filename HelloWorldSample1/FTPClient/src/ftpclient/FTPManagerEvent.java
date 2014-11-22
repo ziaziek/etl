@@ -16,4 +16,7 @@ public class FTPManagerEvent {
     public Object result;
     
     public Object details;
+    
+    public int FTPResponseCode;
+    
 }
