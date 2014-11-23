@@ -21,6 +21,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 /**
  *
  * @author Przemo
@@ -104,6 +105,30 @@ public class FTPManager {
         return null;
     }
 
+    public boolean changeDirectory(String path) throws IOException{
+        if(client.isConnected()){
+            return client.changeWorkingDirectory(path);
+        } else {
+            return false;
+        }
+    }
+    
+    public FTPFile[] getCurrentDirectoryStructure() throws IOException{
+        if(client.isConnected()){
+          return client.listDirectories() ;
+        } else {
+            return null;
+        }     
+    }
+    
+    public FTPFile[] getCurrentDirectoryFilesList() throws IOException{
+        if(client.isConnected()){
+            return client.listFiles();
+        } else {
+            return null;
+        }
+    }
+    
     public boolean UploadFile(String name, InputStream object) {
         boolean result=false;
         if(client.isConnected()){
@@ -115,7 +140,7 @@ public class FTPManager {
                 result=client.storeFile(name, object);
                 if(result){
                     evt.result=1; //accepted
-                    if(!sendUserMail()){
+                    if(!sendUserMail(name)){
                         Logger.getLogger(FTPManager.class.getName()).log(Level.WARNING, null, new Throwable(){
                             
                         });
@@ -130,7 +155,7 @@ public class FTPManager {
         return result;
     }
 
-    public boolean sendUserMail() {
+    public boolean sendUserMail(String uploadedFileName) {
         try {
             String userEmail=db.getUserEmail(uid);
             Properties props = System.getProperties();
@@ -149,7 +174,7 @@ public class FTPManager {
             msg.setFrom("ziaziek@poczta.fm");
             msg.addRecipients(Message.RecipientType.TO, userEmail);
             msg.setSubject("FTP action");
-            msg.setText("FTP action has been recorded");
+            msg.setText("You have succesfully uploaded file "+ uploadedFileName);
             Transport.send(msg);
             return true;
         } catch (MessagingException ex) {
