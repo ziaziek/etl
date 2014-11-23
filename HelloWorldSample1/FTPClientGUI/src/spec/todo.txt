@@ -1,0 +1,6 @@
+
+Implement connect, disconnect with change status on the MainWindow status strip. +
+
+Add current time to the MainWindow status strip. +
+
+Build a directory view panel.
