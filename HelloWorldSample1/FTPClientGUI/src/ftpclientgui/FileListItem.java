@@ -5,7 +5,6 @@
  */
 package ftpclientgui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -21,24 +20,11 @@ public class FileListItem extends JLabel{
     public String getLabel() {
         return label;
     }
-
-    public final void setLabel(String label) {
-        this.label = label;
-        this.ctrlLabel.setText(label);
-    }
-    
-    private final JLabel ctrlLabel;
     
     public FileListItem(String label, ImageIcon image){
         this.setText(label);
         this.setIcon(image);
-        this.ctrlLabel = new JLabel(label, image, JLabel.CENTER);
-        buildControl();
         setPreferredSize(new Dimension(90, 25));
     }
     
-    private void buildControl(){
-        this.setLayout(new BorderLayout());
-        this.add(ctrlLabel, BorderLayout.CENTER);
-    }
 }
