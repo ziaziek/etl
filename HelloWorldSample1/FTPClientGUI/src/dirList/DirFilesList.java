@@ -3,18 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ftpclientgui;
+package dirList;
 
-import javax.swing.JPanel;
+import javax.swing.JList;
 
 /**
  *
  * @author Przemo
  */
-public interface IListFileRenderer {
-    
-    void render(String[] directories, String[] files);
-    
-    void setRenderedControl(JPanel ctrl);
+public class DirFilesList extends JList{
     
 }

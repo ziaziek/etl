@@ -5,6 +5,9 @@
  */
 package ftpclientgui;
 
+import dirList.DefaultDirectoryListRenderer;
+import dirList.FileListItem;
+import dirList.FileListItemTypes;
 import ftpclient.FTPManager;
 import ftpclient.FTPManagerEvent;
 import ftpclient.IFTPManagerListener;
@@ -19,6 +22,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import org.apache.commons.net.ftp.FTPFile;
@@ -31,11 +35,6 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
 
     private final FTPManager mngr;
     private Timer tmr;
-    private IListFileRenderer directoryListRenderer = null;
-
-    public void setDirectoryListRenderer(IListFileRenderer directoryListRenderer) {
-        this.directoryListRenderer = directoryListRenderer;
-    }
     
     /**
      * Creates new form MainWindow
@@ -55,6 +54,9 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     private void init(){
         this.labTime.setText(DateFormat.getTimeInstance().format(new Date()));
         this.labStatus.setText("Not logged in.");
+        this.dirList.setCellRenderer(new DefaultDirectoryListRenderer());
+        this.dirList.setListData(new FileListItem[]{new FileListItem("A",  FileListItemTypes.DIRECTORY)});
+        this.dirList.setLayoutOrientation(JList.VERTICAL_WRAP);
         tmr = new Timer(950, this);
         tmr.start();
     }
@@ -69,7 +71,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     private void resetForm(){
         this.labStatus.setText("Not logged in.");
         this.labLocation.setText("");
-        this.panFolderView.removeAll();
+        this.dirList.removeAll();
     }
     
     /**
@@ -96,7 +98,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
         txtUploadFile = new javax.swing.JTextField();
         btnBrowse = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        panFolderView = new javax.swing.JPanel();
+        dirList = new javax.swing.JList();
         btnUploasd = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -166,21 +168,12 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
             }
         });
 
-        panFolderView.setBackground(new java.awt.Color(255, 255, 255));
-        panFolderView.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        javax.swing.GroupLayout panFolderViewLayout = new javax.swing.GroupLayout(panFolderView);
-        panFolderView.setLayout(panFolderViewLayout);
-        panFolderViewLayout.setHorizontalGroup(
-            panFolderViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 658, Short.MAX_VALUE)
-        );
-        panFolderViewLayout.setVerticalGroup(
-            panFolderViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 158, Short.MAX_VALUE)
-        );
-
-        jScrollPane1.setViewportView(panFolderView);
+        dirList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(dirList);
 
         btnUploasd.setText("Upload");
         btnUploasd.addActionListener(new java.awt.event.ActionListener() {
@@ -340,6 +333,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBrowse;
     private javax.swing.JButton btnUploasd;
+    private javax.swing.JList dirList;
     private javax.swing.JFileChooser fileChoose;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -358,7 +352,6 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     private javax.swing.JLabel labStatus;
     private javax.swing.JLabel labTime;
     private javax.swing.JLabel labVersion;
-    private javax.swing.JPanel panFolderView;
     private javax.swing.JPanel panMain;
     private javax.swing.JPanel panStatus;
     private javax.swing.JTextField txtUploadFile;
@@ -370,7 +363,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
             if ((int) evt.result == 1) {
                 labStatus.setText("Logged In");
                 labLocation.setText(mngr.getHomeDirectory());
-                updateDirFilesList(directoryListRenderer);
+                updateDirFilesList();
             } else {
                 labStatus.setText("Not logged in");
             }
@@ -378,24 +371,20 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
         }
     }
 
-    private void updateDirFilesList(IListFileRenderer r){
+    private void updateDirFilesList(){
         try {
             if(mngr!=null){
                 FTPFile[] fs = mngr.getCurrentDirectoryFilesList();
                 FTPFile[] ds = mngr.getCurrentDirectoryStructure();
-                String[] dsStr = new String[ds.length];
-                String[]fsStr= new String[fs.length];
+                FileListItem[] fsitem = new FileListItem[ds.length+fs.length];
                 for(int i=0; i<ds.length;i++){
-                    dsStr[i] = ds[i].getName();
+                    fsitem[i]=new FileListItem(ds[i].getName(), FileListItemTypes.DIRECTORY);
                 }
                 for(int i=0; i<fs.length;i++){
-                    fsStr[i] = fs[i].getName();
+                    fsitem[i+ds.length]=new FileListItem(fs[i].getName(), FileListItemTypes.FILE);
                 }
-                IListFileRenderer renderer=r;
-                if(renderer==null){
-                    renderer= new DefaultFilesListRenderer(panFolderView);
-                }
-                renderer.render(dsStr, fsStr);
+                dirList.setListData(fsitem);
+                dirList.revalidate();
             }
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
