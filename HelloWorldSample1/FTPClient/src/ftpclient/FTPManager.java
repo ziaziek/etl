@@ -9,6 +9,8 @@ import data.Ftpuser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -123,7 +125,24 @@ public class FTPManager {
     
     public FTPFile[] getCurrentDirectoryFilesList() throws IOException{
         if(client.isConnected()){
-            return client.listFiles();
+            FTPFile[] fs = client.listFiles();
+            //listFiles returns both files and directories!
+            List<FTPFile> fsList = new ArrayList<>();
+            for(FTPFile f : fs){
+                if(f.isFile()){
+                    fsList.add(f);
+                }
+            }
+            Collections.sort(fsList, new Comparator<FTPFile>(){
+
+                @Override
+                public int compare(FTPFile o1, FTPFile o2) {
+                    return o1.getName().compareToIgnoreCase(o2.getName());
+                }
+                
+            });
+            
+            return (FTPFile[]) fsList.toArray( new FTPFile[]{});
         } else {
             return null;
         }

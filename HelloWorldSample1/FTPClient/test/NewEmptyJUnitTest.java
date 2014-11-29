@@ -74,7 +74,7 @@ public class NewEmptyJUnitTest {
     public void sendMessage() throws IOException{
         FTPManager mngr = new FTPManager("localhost", 21);
         mngr.setDb(new DBProxyStub(0));
-        Assert.assertTrue(mngr.sendUserMail());
+        Assert.assertTrue(mngr.sendUserMail(""));
     }
     
     @Test

@@ -2,6 +2,13 @@
 Uploading a file action registration in the DB. +
 Unsuccesfull action registration. +
 Link succesfull uploading with sending an email. +
-Add description of what file has been uploaded.
+Add description of what file has been uploaded. +
 Build a GUI for the app (another project or package)
+
+
+23/11/2014
+Get directory structure of the current directory
+
+Next
+Introduceconfigurability of as many parameters as possible or applicable
 Production implementation of the solution.
