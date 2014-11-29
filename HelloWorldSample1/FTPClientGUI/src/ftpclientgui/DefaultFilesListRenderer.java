@@ -5,6 +5,7 @@
  */
 package ftpclientgui;
 
+import java.awt.FlowLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -35,6 +36,7 @@ public class DefaultFilesListRenderer implements IListFileRenderer{
     
     public DefaultFilesListRenderer(JPanel renderedPanel){
         this.rPan=renderedPanel;
+        rPan.setLayout(new FlowLayout());
     }
     
     
@@ -56,6 +58,7 @@ public class DefaultFilesListRenderer implements IListFileRenderer{
     
     @Override
     public void render(String[] dirs, String[] files){
+        rPan.removeAll();
         int nrow=0;
         for(String d: dirs){
             nrow = renderItem(new FileListItem(d, new ImageIcon("/resources/folder_icon.png")), ++nrow);
@@ -63,6 +66,7 @@ public class DefaultFilesListRenderer implements IListFileRenderer{
         for(String f: files){          
             nrow = renderItem(new FileListItem(f, new ImageIcon("/resources/file_icon.png")), ++nrow);            
         }
+        rPan.repaint();
     }
 
     @Override

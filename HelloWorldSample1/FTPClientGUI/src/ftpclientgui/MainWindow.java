@@ -12,11 +12,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.LinkOption;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import org.apache.commons.net.ftp.FTPFile;
 
@@ -79,6 +82,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     private void initComponents() {
 
         jMenuItem1 = new javax.swing.JMenuItem();
+        fileChoose = new javax.swing.JFileChooser();
         panStatus = new javax.swing.JPanel();
         labVersion = new javax.swing.JLabel();
         labTime = new javax.swing.JLabel();
@@ -93,6 +97,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
         btnBrowse = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         panFolderView = new javax.swing.JPanel();
+        btnUploasd = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -152,7 +157,14 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
 
         jLabel2.setText("Upload File:");
 
+        txtUploadFile.setEditable(false);
+
         btnBrowse.setText("...");
+        btnBrowse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBrowseActionPerformed(evt);
+            }
+        });
 
         panFolderView.setBackground(new java.awt.Color(255, 255, 255));
         panFolderView.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -161,7 +173,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
         panFolderView.setLayout(panFolderViewLayout);
         panFolderViewLayout.setHorizontalGroup(
             panFolderViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 574, Short.MAX_VALUE)
+            .addGap(0, 658, Short.MAX_VALUE)
         );
         panFolderViewLayout.setVerticalGroup(
             panFolderViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,6 +181,13 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
         );
 
         jScrollPane1.setViewportView(panFolderView);
+
+        btnUploasd.setText("Upload");
+        btnUploasd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUploasdActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panMainLayout = new javax.swing.GroupLayout(panMain);
         panMain.setLayout(panMainLayout);
@@ -180,13 +199,15 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
                 .addComponent(txtUploadFile, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnBrowse, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnUploasd, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(panMainLayout.createSequentialGroup()
                 .addGap(3, 3, 3)
                 .addGroup(panMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panMainLayout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addContainerGap())
+                        .addGap(3, 3, 3))
                     .addGroup(panMainLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(37, 37, 37)
@@ -205,7 +226,8 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
                 .addGroup(panMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtUploadFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBrowse)))
+                    .addComponent(btnBrowse)
+                    .addComponent(btnUploasd)))
         );
 
         jMenu1.setText("File");
@@ -250,7 +272,9 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(panMain, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(panStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -285,9 +309,38 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
         frm.setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    /**
+     * Browse button clicked. Show the file chooser and fill in the text field afterwards
+     * @param evt 
+     */
+    private void btnBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowseActionPerformed
+        if(fileChoose.showOpenDialog(this)== JOptionPane.OK_OPTION){
+            txtUploadFile.setText(fileChoose.getSelectedFile().getPath());         
+        }
+    }//GEN-LAST:event_btnBrowseActionPerformed
+
+    private void btnUploasdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploasdActionPerformed
+        if(!txtUploadFile.getText().equals("") && java.nio.file.Files.exists(java.nio.file.Paths.get(txtUploadFile.getText()), LinkOption.NOFOLLOW_LINKS)){
+            try {
+                String message;
+                if(!mngr.UploadFile(new java.io.File(txtUploadFile.getText()).getName(), new java.io.BufferedInputStream(new java.io.FileInputStream(txtUploadFile.getText())))){
+                    message = "File could not be uploaded!";
+                } else {
+                    message = "File uploaded sucesfully.";
+                    txtUploadFile.setText("");
+                }
+                JOptionPane.showMessageDialog(this, message);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnUploasdActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBrowse;
+    private javax.swing.JButton btnUploasd;
+    private javax.swing.JFileChooser fileChoose;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
