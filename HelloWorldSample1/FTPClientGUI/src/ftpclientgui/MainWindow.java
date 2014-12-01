@@ -8,6 +8,7 @@ package ftpclientgui;
 import dirList.DefaultDirectoryListRenderer;
 import dirList.FileListItem;
 import dirList.FileListItemTypes;
+import dirList.IFileListItemAdapter;
 import ftpclient.FTPManager;
 import ftpclient.FTPManagerEvent;
 import ftpclient.IFTPManagerListener;
@@ -35,6 +36,15 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
 
     private final FTPManager mngr;
     private Timer tmr;
+    private IFileListItemAdapter fsAdapter = null;
+
+    public IFileListItemAdapter getFsAdapter() {
+        return fsAdapter;
+    }
+
+    public void setFsAdapter(IFileListItemAdapter fsAdapter) {
+        this.fsAdapter = fsAdapter;
+    }
     
     /**
      * Creates new form MainWindow
@@ -374,14 +384,17 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     private void updateDirFilesList(){
         try {
             if(mngr!=null){
+                if(fsAdapter==null){
+                    fsAdapter = new FTPListItemAdapter();
+                }
                 FTPFile[] fs = mngr.getCurrentDirectoryFilesList();
                 FTPFile[] ds = mngr.getCurrentDirectoryStructure();
                 FileListItem[] fsitem = new FileListItem[ds.length+fs.length];
                 for(int i=0; i<ds.length;i++){
-                    fsitem[i]=new FileListItem(ds[i].getName(), FileListItemTypes.DIRECTORY);
+                    fsitem[i] = fsAdapter.getFileListItem(fs[i]);
                 }
                 for(int i=0; i<fs.length;i++){
-                    fsitem[i+ds.length]=new FileListItem(fs[i].getName(), FileListItemTypes.FILE);
+                    fsitem[i+ds.length]=fsAdapter.getFileListItem(fs[i]);
                 }
                 dirList.setListData(fsitem);
                 dirList.revalidate();
