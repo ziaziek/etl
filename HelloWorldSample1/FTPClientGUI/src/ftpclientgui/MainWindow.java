@@ -8,6 +8,7 @@ package ftpclientgui;
 import dirList.DefaultDirectoryListRenderer;
 import dirList.FileListItem;
 import dirList.FileListItemTypes;
+import dirList.FileListSelecttionEvent;
 import dirList.IFileListItemAdapter;
 import ftpclient.FTPManager;
 import ftpclient.FTPManagerEvent;
@@ -26,13 +27,15 @@ import java.util.logging.Logger;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import org.apache.commons.net.ftp.FTPFile;
 
 /**
  *
  * @author Przemo
  */
-public class MainWindow extends javax.swing.JFrame implements IFTPManagerListener, ActionListener, WindowListener {
+public class MainWindow extends javax.swing.JFrame implements IFTPManagerListener, ActionListener, WindowListener, ListSelectionListener {
 
     private final FTPManager mngr;
     private Timer tmr;
@@ -67,6 +70,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
         this.dirList.setCellRenderer(new DefaultDirectoryListRenderer());
         this.dirList.setListData(new FileListItem[]{new FileListItem("A",  FileListItemTypes.DIRECTORY)});
         this.dirList.setLayoutOrientation(JList.VERTICAL_WRAP);
+        this.dirList.addListSelectionListener( this);
         tmr = new Timer(950, this);
         tmr.start();
     }
@@ -444,5 +448,17 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     @Override
     public void windowDeactivated(WindowEvent e) {
        
+    }
+
+    /**
+     * List selection changed
+     * @param e 
+     */
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if(e instanceof FileListSelecttionEvent){
+            FileListSelecttionEvent ev = (FileListSelecttionEvent)e;
+            this.labLocation.setText(ev.getItemSource().getLabel());
+        }
     }
 }
