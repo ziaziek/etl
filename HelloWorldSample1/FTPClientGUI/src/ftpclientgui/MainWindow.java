@@ -40,7 +40,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     private final FTPManager mngr;
     private Timer tmr;
     private IFileListItemAdapter fsAdapter = null;
-
+    
     public IFileListItemAdapter getFsAdapter() {
         return fsAdapter;
     }
@@ -70,7 +70,6 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
         this.dirList.setCellRenderer(new DefaultDirectoryListRenderer());
         this.dirList.setListData(new FileListItem[]{new FileListItem("A",  FileListItemTypes.DIRECTORY)});
         this.dirList.setLayoutOrientation(JList.VERTICAL_WRAP);
-        this.dirList.addListSelectionListener( this);
         tmr = new Timer(950, this);
         tmr.start();
     }
@@ -112,7 +111,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
         txtUploadFile = new javax.swing.JTextField();
         btnBrowse = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        dirList = new javax.swing.JList();
+        dirList = new dirList.DirectoryList();
         btnUploasd = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -347,7 +346,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBrowse;
     private javax.swing.JButton btnUploasd;
-    private javax.swing.JList dirList;
+    private dirList.DirectoryList dirList;
     private javax.swing.JFileChooser fileChoose;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

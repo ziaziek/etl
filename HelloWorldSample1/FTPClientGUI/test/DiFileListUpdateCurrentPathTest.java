@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import dirList.DirFilesList;
+import dirList.DirectoryList;
 import dirList.FileListItem;
 import dirList.FileListItemTypes;
 import junit.framework.Assert;
@@ -19,7 +19,7 @@ import org.junit.Test;
  */
 public class DiFileListUpdateCurrentPathTest {
     
-    private class DirFileListExtended extends DirFilesList {
+    private class DirFileListExtended extends DirectoryList {
         
         public void update(FileListItem item){
             updateCurrentPath(item);
