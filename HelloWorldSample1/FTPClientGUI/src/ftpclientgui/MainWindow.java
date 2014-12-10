@@ -6,7 +6,6 @@
 package ftpclientgui;
 
 import dirList.FileListItem;
-import dirList.FileListSelecttionEvent;
 import dirList.IFileListItemAdapter;
 import ftpclient.FTPManager;
 import ftpclient.FTPManagerEvent;
@@ -64,6 +63,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     private void init(){
         this.labTime.setText(DateFormat.getTimeInstance().format(new Date()));
         this.labStatus.setText("Not logged in.");
+        this.dirList.addSelectionListener(this);
         tmr = new Timer(950, this);
         tmr.start();
     }
@@ -440,8 +440,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
      */
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if(e instanceof FileListSelecttionEvent && e.getSource().equals(dirList)){
-            FileListSelecttionEvent ev = (FileListSelecttionEvent)e;
+        if( e.getSource().equals(dirList)){
             this.labLocation.setText(dirList.getCurrentFolderPath());
         }
     }

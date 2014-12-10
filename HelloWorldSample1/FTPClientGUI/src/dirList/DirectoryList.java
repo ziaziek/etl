@@ -6,24 +6,27 @@
 package dirList;
 
 import java.awt.BorderLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import java.util.HashSet;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
  * @author Przemo
  */
-public class DirectoryList extends JComponent implements Serializable, MouseListener {
+public class DirectoryList extends JComponent implements Serializable, ListSelectionListener {
     
     private PropertyChangeSupport propertySupport = null;
+    
+    private HashSet<ListSelectionListener> selectionListeners;
     
     private final JScrollPane scroll ;
     
@@ -36,9 +39,10 @@ public class DirectoryList extends JComponent implements Serializable, MouseList
     }
     
     public DirectoryList() {
+        selectionListeners= new HashSet<>();
         lista = new JList();
         scroll = new JScrollPane(lista);
-        lista.addMouseListener(this);
+        lista.addListSelectionListener(this);
         lista.setCellRenderer(new DefaultDirectoryListRenderer());
         lista.setLayoutOrientation(JList.VERTICAL_WRAP);
         setLayout(new BorderLayout());
@@ -62,6 +66,10 @@ public class DirectoryList extends JComponent implements Serializable, MouseList
     
     public ListModel getModel(){
         return lista.getModel();
+    }
+    
+    public void addSelectionListener(ListSelectionListener listener){
+        selectionListeners.add(listener);
     }
     
     protected void updateCurrentPath(FileListItem item){
@@ -92,30 +100,13 @@ public class DirectoryList extends JComponent implements Serializable, MouseList
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void valueChanged(ListSelectionEvent e) {
         if(lista.getSelectedValue() instanceof FileListItem){
             updateCurrentPath((FileListItem)lista.getSelectedValue());
+            for(ListSelectionListener l: selectionListeners){
+                l.valueChanged(new ListSelectionEvent(this, e.getFirstIndex(), e.getLastIndex(), e.getValueIsAdjusting()));
+            }
         }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-       
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-       
     }
     
 }
