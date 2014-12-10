@@ -5,9 +5,7 @@
  */
 package ftpclientgui;
 
-import dirList.DefaultDirectoryListRenderer;
 import dirList.FileListItem;
-import dirList.FileListItemTypes;
 import dirList.FileListSelecttionEvent;
 import dirList.IFileListItemAdapter;
 import ftpclient.FTPManager;
@@ -24,7 +22,6 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
@@ -67,9 +64,6 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     private void init(){
         this.labTime.setText(DateFormat.getTimeInstance().format(new Date()));
         this.labStatus.setText("Not logged in.");
-        this.dirList.setCellRenderer(new DefaultDirectoryListRenderer());
-        this.dirList.setListData(new FileListItem[]{new FileListItem("A",  FileListItemTypes.DIRECTORY)});
-        this.dirList.setLayoutOrientation(JList.VERTICAL_WRAP);
         tmr = new Timer(950, this);
         tmr.start();
     }
@@ -110,9 +104,8 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
         jLabel2 = new javax.swing.JLabel();
         txtUploadFile = new javax.swing.JTextField();
         btnBrowse = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        dirList = new dirList.DirectoryList();
         btnUploasd = new javax.swing.JButton();
+        dirList = new dirList.DirectoryList();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -181,13 +174,6 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
             }
         });
 
-        dirList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(dirList);
-
         btnUploasd.setText("Upload");
         btnUploasd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -200,24 +186,23 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
         panMainLayout.setHorizontalGroup(
             panMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panMainLayout.createSequentialGroup()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtUploadFile, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnBrowse, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnUploasd, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(15, 15, 15)
+                .addComponent(jLabel1)
+                .addGap(37, 37, 37)
+                .addComponent(labLocation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(panMainLayout.createSequentialGroup()
-                .addGap(3, 3, 3)
                 .addGroup(panMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panMainLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addGap(3, 3, 3))
-                    .addGroup(panMainLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(37, 37, 37)
-                        .addComponent(labLocation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtUploadFile, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBrowse, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnUploasd, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(dirList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         panMainLayout.setVerticalGroup(
             panMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -227,7 +212,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
                     .addComponent(jLabel1)
                     .addComponent(labLocation))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1)
+                .addComponent(dirList, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -358,7 +343,6 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel labLocation;
@@ -394,12 +378,13 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
                 FTPFile[] ds = mngr.getCurrentDirectoryStructure();
                 FileListItem[] fsitem = new FileListItem[ds.length+fs.length];
                 for(int i=0; i<ds.length;i++){
-                    fsitem[i] = fsAdapter.getFileListItem(fs[i]);
+                    fsitem[i] = fsAdapter.getFileListItem(ds[i]);
                 }
                 for(int i=0; i<fs.length;i++){
                     fsitem[i+ds.length]=fsAdapter.getFileListItem(fs[i]);
                 }
                 dirList.setListData(fsitem);
+                
                 dirList.revalidate();
             }
         } catch (IOException ex) {
@@ -455,9 +440,9 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
      */
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if(e instanceof FileListSelecttionEvent){
+        if(e instanceof FileListSelecttionEvent && e.getSource().equals(dirList)){
             FileListSelecttionEvent ev = (FileListSelecttionEvent)e;
-            this.labLocation.setText(ev.getItemSource().getLabel());
+            this.labLocation.setText(dirList.getCurrentFolderPath());
         }
     }
 }

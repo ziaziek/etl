@@ -5,24 +5,29 @@
  */
 package dirList;
 
+import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
+import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 
 /**
  *
  * @author Przemo
  */
-public class DirectoryList extends JList implements Serializable, MouseListener {
+public class DirectoryList extends JComponent implements Serializable, MouseListener {
     
-    public static final String PROP_SAMPLE_PROPERTY = "sampleProperty";
+    private PropertyChangeSupport propertySupport = null;
     
-    private String sampleProperty;
+    private final JScrollPane scroll ;
     
-    private final PropertyChangeSupport propertySupport;
+    private final JList lista;
     
     private String currentFolderPath = null;
 
@@ -31,24 +36,32 @@ public class DirectoryList extends JList implements Serializable, MouseListener 
     }
     
     public DirectoryList() {
-        super.addMouseListener(this);
-        propertySupport = new PropertyChangeSupport(this); 
+        lista = new JList();
+        scroll = new JScrollPane(lista);
+        lista.addMouseListener(this);
+        lista.setCellRenderer(new DefaultDirectoryListRenderer());
+        lista.setLayoutOrientation(JList.VERTICAL_WRAP);
+        setLayout(new BorderLayout());
+        add(scroll, BorderLayout.CENTER);
     }
     
-    public String getSampleProperty() {
-        return sampleProperty;
+    public void setListData(Object[] data){
+        lista.setListData(data);
+        this.validate();
     }
     
-    public void setSampleProperty(String value) {
-        String oldValue = sampleProperty;
-        sampleProperty = value;
-        propertySupport.firePropertyChange(PROP_SAMPLE_PROPERTY, oldValue, sampleProperty);
-    }
-    
-    public void setInitialCurrentFolderPath(String p){
+    public void InitialCurrentFolderPath(String p){
         if(currentFolderPath==null){
             currentFolderPath=p;
         }
+    }
+    
+    public void setListRenderer(ListCellRenderer rend){
+        lista.setCellRenderer(rend);
+    }
+    
+    public ListModel getModel(){
+        return lista.getModel();
     }
     
     protected void updateCurrentPath(FileListItem item){
@@ -65,18 +78,23 @@ public class DirectoryList extends JList implements Serializable, MouseListener 
     
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        //propertySupport.addPropertyChangeListener(listener);
+        if(propertySupport==null){
+            propertySupport = new PropertyChangeSupport(this);      
+        }     
+        propertySupport.addPropertyChangeListener(listener);  
     }
     
     @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        //propertySupport.removePropertyChangeListener(listener);
+        if (propertySupport!=null){
+           propertySupport.removePropertyChangeListener(listener); 
+        }    
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if(getSelectedValue() instanceof FileListItem){
-            updateCurrentPath((FileListItem)getSelectedValue());
+        if(lista.getSelectedValue() instanceof FileListItem){
+            updateCurrentPath((FileListItem)lista.getSelectedValue());
         }
     }
 

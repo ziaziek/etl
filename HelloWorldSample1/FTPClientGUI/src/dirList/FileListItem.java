@@ -41,10 +41,10 @@ public class FileListItem extends JLabel {
     
     //constructor visible from within the package. Can be used by the renderer.
     FileListItem(String label, ImageIcon image){
-        super(label, image, JLabel.CENTER);
+        super(label, image, JLabel.LEFT);
         this.label=label;
         this.icon = image;
-        setPreferredSize(new Dimension(180,100));
+        setPreferredSize(new Dimension(180,25));
     }
     
 }

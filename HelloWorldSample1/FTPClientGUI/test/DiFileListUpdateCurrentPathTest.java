@@ -49,9 +49,9 @@ public class DiFileListUpdateCurrentPathTest {
     public void currentFolderTest(){
         DirFileListExtended df = new DirFileListExtended();
         Assert.assertNull(df.getCurrentFolderPath());
-        df.setInitialCurrentFolderPath("/");
+        df.InitialCurrentFolderPath("/");
         Assert.assertEquals("/", df.getCurrentFolderPath());
-        df.setInitialCurrentFolderPath("/D");
+        df.InitialCurrentFolderPath("/D");
         Assert.assertEquals("/", df.getCurrentFolderPath());
     }
     
@@ -60,7 +60,7 @@ public class DiFileListUpdateCurrentPathTest {
         FileListItem item = new FileListItem("Drhjkii", FileListItemTypes.FILE);
         Assert.assertNotNull(item.getLabel());
         DirFileListExtended df = new DirFileListExtended();
-        df.setInitialCurrentFolderPath("/");
+        df.InitialCurrentFolderPath("/");
         df.update(item);
         Assert.assertEquals("/", df.getCurrentFolderPath());
         item = new FileListItem("D", FileListItemTypes.DIRECTORY);
