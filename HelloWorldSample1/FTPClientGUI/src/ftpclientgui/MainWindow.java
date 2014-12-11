@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -251,7 +252,12 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
 
         jMenu2.setText("Edit");
 
-        jMenuItem5.setLabel("Properties");
+        jMenuItem5.setLabel("Settings");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem5);
 
         jMenuBar1.add(jMenu2);
@@ -326,6 +332,21 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
             }
         }
     }//GEN-LAST:event_btnUploasdActionPerformed
+
+    /**
+     * Settings clicked
+     */  
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        
+        SwingUtilities.invokeLater(new Runnable(){
+
+            @Override
+            public void run() {
+               SettingsForm sf = new SettingsForm();
+               sf.setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
