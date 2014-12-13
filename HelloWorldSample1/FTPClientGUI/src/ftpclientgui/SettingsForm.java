@@ -5,6 +5,9 @@
  */
 package ftpclientgui;
 
+import settings.DefaultFileSettingProvider;
+import settings.Settings;
+
 /**
  *
  * @author Przemo
@@ -209,6 +212,17 @@ public class SettingsForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnOKActionPerformed
 
+    private void testFuncjonalny(){
+        //test funkcjonalny
+                new SettingsForm().setVisible(true);
+                Settings s = new Settings();
+                s.setDatabaseAddress("db.addr");
+                s.setFtpAddress("ftp.addr");
+                s.setSenderLogin("em");
+                s.setSenderPassword("pswd".getBytes());
+                s.setSenderEmail("em@");
+                new DefaultFileSettingProvider("D:/settings.xml").saveSettings(s);
+    }
     /**
      * @param args the command line arguments
      */
@@ -238,8 +252,9 @@ public class SettingsForm extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
-                new SettingsForm().setVisible(true);
+                
             }
         });
     }
