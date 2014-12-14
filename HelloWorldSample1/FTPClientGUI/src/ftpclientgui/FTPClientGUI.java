@@ -7,11 +7,17 @@ package ftpclientgui;
 
 import ftpclient.DatabaseProxy;
 import ftpclient.FTPManager;
+import ftpclient.FTPManagerInitializationException;
+import interfaces.ISettingsProvider;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
+import settings.DefaultFileSettingsProvider;
 
 /**
  *
@@ -19,6 +25,9 @@ import javax.swing.SwingUtilities;
  */
 public class FTPClientGUI {
 
+    public static final String SETTINGS_FILENAME = "D:/ftpClientSettings.xml";
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -30,11 +39,16 @@ public class FTPClientGUI {
                 @Override
                 public void run() {
                     try {
-                        FTPManager m = new FTPManager("localhost", 21);
+                        if(Files.notExists(Paths.get(SETTINGS_FILENAME), LinkOption.NOFOLLOW_LINKS)){
+                            Files.createFile(Paths.get(SETTINGS_FILENAME));
+                        }
+                        ISettingsProvider settingsProvider = new DefaultFileSettingsProvider(SETTINGS_FILENAME);
+                        FTPManager m = new FTPManager(settingsProvider.loadSettings());
+                        m.initialiseManager();
                         m.setDb(new DatabaseProxy());
-                        MainWindow mw = new MainWindow(m);
+                        MainWindow mw = new MainWindow(m, settingsProvider);
                         mw.setVisible(true);
-                    } catch (IOException ex) {
+                    } catch (IOException | FTPManagerInitializationException ex) {
                         Logger.getLogger(FTPClientGUI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }

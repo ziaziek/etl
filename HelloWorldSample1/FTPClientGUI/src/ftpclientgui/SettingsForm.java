@@ -5,7 +5,9 @@
  */
 package ftpclientgui;
 
-import settings.DefaultFileSettingProvider;
+import interfaces.ISettingsProvider;
+import javax.swing.JOptionPane;
+import settings.DefaultFileSettingsProvider;
 import settings.Settings;
 
 /**
@@ -14,11 +16,18 @@ import settings.Settings;
  */
 public class SettingsForm extends javax.swing.JFrame {
 
+    //musimy miec ten holder dla informacji niejawnych dla klas kozystających, żeby można było zachować cały obieky, a nie tylko pola edytowalne.
+    private Settings _settings=null;
+    
+    private ISettingsProvider settingsProvider=null;
     /**
      * Creates new form SettingsForm
+     * @param settingsPrvd
      */
-    public SettingsForm() {
+    public SettingsForm(ISettingsProvider settingsPrvd) {
         initComponents();
+        this.settingsProvider = settingsPrvd;
+        fillForm();
     }
 
     /**
@@ -203,25 +212,33 @@ public class SettingsForm extends javax.swing.JFrame {
      * @param evt 
      */
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
-        boolean success=false;
-        // Save settings
-        
-        //Give information that the app has to be restarted
-        if(success){
-            
+
+        // Save settingsProvider
+        _settings.setDatabaseAddress(txtDatabaseAddress.getText());
+        _settings.setFtpAddress(txtFTPAddress.getText());
+        _settings.setSenderEmail(txtSenderEmail.getText());
+        _settings.setSenderLogin(txtLogin.getText());
+        _settings.setSenderPassword(txtPassword.getPassword());
+        if(settingsProvider.saveSettings(_settings)){
+          //Give information that the app has to be restarted  
+            JOptionPane.showMessageDialog(this, "Settings saved. Please restart the application to reload the settings.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Settings could not be saved.", "Settings save.", JOptionPane.ERROR_MESSAGE);
         }
+        this.dispose();
+        
     }//GEN-LAST:event_btnOKActionPerformed
 
-    private void testFuncjonalny(){
+    private static void testFuncjonalny(){
         //test funkcjonalny
-                new SettingsForm().setVisible(true);
+                new SettingsForm(null).setVisible(true);
                 Settings s = new Settings();
                 s.setDatabaseAddress("db.addr");
                 s.setFtpAddress("ftp.addr");
                 s.setSenderLogin("em");
-                s.setSenderPassword("pswd".getBytes());
+                //s.setSenderPassword("pswd".toCharArray());
                 s.setSenderEmail("em@");
-                new DefaultFileSettingProvider("D:/settings.xml").saveSettings(s);
+                new DefaultFileSettingsProvider("D:/settings.xml").saveSettings(s);
     }
     /**
      * @param args the command line arguments
@@ -254,7 +271,7 @@ public class SettingsForm extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                
+                testFuncjonalny();
             }
         });
     }
@@ -277,4 +294,21 @@ public class SettingsForm extends javax.swing.JFrame {
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtSenderEmail;
     // End of variables declaration//GEN-END:variables
+
+    private void fillForm() {
+
+        if (settingsProvider != null) {
+            if ((_settings = settingsProvider.loadSettings()) != null) {
+                txtDatabaseAddress.setText(_settings.getDatabaseAddress());
+                txtFTPAddress.setText(_settings.getFtpAddress());
+                txtLogin.setText(_settings.getSenderLogin());
+                if(_settings.getSenderPassword()!=null){
+                    txtPassword.setText(new String(_settings.getSenderPassword()));
+                }            
+                txtSenderEmail.setText(_settings.getSenderEmail());
+            }
+
+        }
+
+    }
 }

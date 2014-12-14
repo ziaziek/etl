@@ -10,6 +10,7 @@ import dirList.IFileListItemAdapter;
 import ftpclient.FTPManager;
 import ftpclient.FTPManagerEvent;
 import ftpclient.IFTPManagerListener;
+import interfaces.ISettingsProvider;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -37,6 +38,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     private final FTPManager mngr;
     private Timer tmr;
     private IFileListItemAdapter fsAdapter = null;
+    private final ISettingsProvider sprvd;
     
     public IFileListItemAdapter getFsAdapter() {
         return fsAdapter;
@@ -49,12 +51,14 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     /**
      * Creates new form MainWindow
      * @param ftpMngr
+     * @param sprvd
      */
-    public MainWindow(FTPManager ftpMngr) {
+    public MainWindow(FTPManager ftpMngr, ISettingsProvider sprvd) {
         initComponents();
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setResizable(false);
         this.mngr=ftpMngr;
+        this.sprvd=sprvd;
         if(ftpMngr!=null){
            ftpMngr.addListener(this); 
         }   
@@ -342,7 +346,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
 
             @Override
             public void run() {
-               SettingsForm sf = new SettingsForm();
+               SettingsForm sf = new SettingsForm(sprvd);
                sf.setVisible(true);
             }
         });
