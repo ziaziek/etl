@@ -16,12 +16,13 @@ public class Application {
 
     /**
      * @param args the command line arguments
+     * @throws ftpclient.FTPManagerInitializationException
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FTPManagerInitializationException {
         // TODO code application logic here
         
         try {
-            FTPManager ftpmngr = new FTPManager("localhost", 21);
+            FTPManager ftpmngr = new FTPManager(null);
             ftpmngr.setDb(new DatabaseProxy());
             ftpmngr.LogIn("asia.klich@gmail.com", "derek");
             

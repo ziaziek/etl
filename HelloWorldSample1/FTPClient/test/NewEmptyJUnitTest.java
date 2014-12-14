@@ -5,6 +5,7 @@
  */
 import ftpclient.DatabaseProxy;
 import ftpclient.FTPManager;
+import ftpclient.FTPManagerInitializationException;
 import java.io.IOException;
 import junit.framework.Assert;
 import org.junit.After;
@@ -45,8 +46,8 @@ public class NewEmptyJUnitTest {
     // public void hello() {}
     
     @Test
-    public void ftpConnectionTest() throws IOException{
-        FTPManager mngr = new FTPManager("localhost", 21);
+    public void ftpConnectionTest() throws IOException, FTPManagerInitializationException{
+        FTPManager mngr = new FTPManager(null);
         mngr.setDb(new DBProxyStub(0));
         Assert.assertTrue(mngr.LogIn("asia.klich@gmail.com", "derek"));
         Assert.assertNotNull(mngr.getHomeDirectory());
@@ -71,15 +72,15 @@ public class NewEmptyJUnitTest {
     }
     
     @Test
-    public void sendMessage() throws IOException{
-        FTPManager mngr = new FTPManager("localhost", 21);
+    public void sendMessage() throws IOException, FTPManagerInitializationException{
+        FTPManager mngr = new FTPManager(null);
         mngr.setDb(new DBProxyStub(0));
         Assert.assertTrue(mngr.sendUserMail(""));
     }
     
     @Test
-    public void loginRegistrationTest() throws IOException{
-        FTPManager mngr = new FTPManager("localhost", 21);
+    public void loginRegistrationTest() throws IOException, FTPManagerInitializationException{
+        FTPManager mngr = new FTPManager(null);
         mngr.setDb(new DBProxyStub(0));
         mngr.addListener(mngr.getDb());
         mngr.LogIn("asia.klich@gmail.com", "derek");

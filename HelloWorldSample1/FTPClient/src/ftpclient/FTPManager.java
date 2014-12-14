@@ -24,12 +24,22 @@ import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import settings.Settings;
 /**
  *
  * @author Przemo
  */
 public class FTPManager {
 
+    Settings settings;
+    
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
+    }
     FTPClient client;
     int uid=-1;
     List<IFTPManagerListener> listeners = null;
@@ -45,10 +55,20 @@ public class FTPManager {
         addListener(db);
     }
     
-    public FTPManager(String host, int portNumber) throws IOException{
-        client = new FTPClient();
-        client.connect(host, portNumber);
+    public FTPManager(Settings settings) throws IOException{
+        this.settings = settings;
         listeners = new ArrayList<>();
+        client = new FTPClient();
+    }
+    
+    public void initialiseManager() throws IOException, FTPManagerInitializationException{
+        if (settings != null) {
+                      
+            client.connect(settings.getFtpAddress(), settings.getFtpPortNumber());
+                    
+        } else {
+            throw new FTPManagerInitializationException();
+        }
     }
     
     public void addListener(IFTPManagerListener l){
@@ -175,10 +195,11 @@ public class FTPManager {
     }
 
     public boolean sendUserMail(String uploadedFileName) {
-        try {
+        if(settings!=null){
+          try {
             String userEmail=db.getUserEmail(uid);
             Properties props = System.getProperties();
-            props.setProperty("mail.smtp.host", "www.poczta.fm");
+            props.setProperty("mail.smtp.host", settings.getSenderEmailHost());
             props.setProperty("mail.smtp.auth", "true");
 //            props.put("mail.smtp.starttls.enable", "true");
 //            props.put("mail.smtp.port", "587");
@@ -186,11 +207,11 @@ public class FTPManager {
 
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("ziaziek@poczta.fm", "Saba123");
+                    return new PasswordAuthentication(settings.getSenderLogin(), new String(settings.getSenderPassword()));
                 }
             });
             MimeMessage msg = new MimeMessage(s);
-            msg.setFrom("ziaziek@poczta.fm");
+            msg.setFrom(settings.getSenderEmail());
             msg.addRecipients(Message.RecipientType.TO, userEmail);
             msg.setSubject("FTP action");
             msg.setText("You have succesfully uploaded file "+ uploadedFileName);
@@ -199,7 +220,10 @@ public class FTPManager {
         } catch (MessagingException ex) {
             Logger.getLogger(FTPManager.class.getName()).log(Level.SEVERE, null, ex);
             return false;
-        }
+        }  
+        } else {
+            return false;
+        }        
     }
     
 }
