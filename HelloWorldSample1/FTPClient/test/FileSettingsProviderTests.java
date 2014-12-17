@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+import encryption.Encryptor;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.logging.Level;
@@ -83,16 +84,20 @@ public class FileSettingsProviderTests {
                 + "<FtpAddr>ftp.address</FtpAddr>"
                 +"<DBAddr>my.db.address</DBAddr>"
                 +"<SendEmailAddr>my@email.com</SendEmailAddr>"
-                +"<EmailPass>emailPassword</EmailPass></Settings>"
-                +"<LoginEmail/>";
+                +"<EmailPass>emailPassword</EmailPass>"
+                +"<LoginEmail/>"
+                +"</Settings>";
+                
         DefaultFileSettingsProviderStub sp = new DefaultFileSettingsProviderStub(textToParse);
         Settings s = sp.loadSettings();
         Assert.assertNotNull(s);
         Assert.assertEquals("ftp.address", s.getFtpAddress());
         Assert.assertEquals("my.db.address", s.getDatabaseAddress());
         Assert.assertEquals("my@email.com", s.getSenderEmail());
-        Assert.assertEquals("emailPassword",  new String(s.getSenderPassword()));
-        Assert.assertEquals(null, s.getSenderLogin());
+        //Decode
+        Encryptor enc = new Encryptor(Encryptor.ENCRYPTOR_MODE.LOAD_INIT);
+        Assert.assertEquals("emailPassword",  new String(enc.decrypt(new String(s.getSenderPassword()).getBytes())));
+        Assert.assertEquals("", s.getSenderLogin());
     }
     
     @Test

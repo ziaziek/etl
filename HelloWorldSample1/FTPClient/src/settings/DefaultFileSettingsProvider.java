@@ -5,6 +5,7 @@
  */
 package settings;
 
+import encryption.Encryptor;
 import interfaces.ISettingsProvider;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -142,7 +143,8 @@ public class DefaultFileSettingsProvider extends DefaultHandler implements ISett
                         _settings.setDatabasePassword(currentValue);
                         break;
                     case SENDER_EMAIL_PASSWORD_XML:
-                        _settings.setSenderPassword(currentValue.toCharArray());
+                         Encryptor enc = new Encryptor();                      
+                        _settings.setSenderPassword(new String(enc.encrypt(currentValue.getBytes())).toCharArray());
                         break;
                     case SENDER_EMAIL_XML:
                         _settings.setSenderEmail(currentValue);
