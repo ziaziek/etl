@@ -5,6 +5,7 @@
  */
 package ftpclientgui;
 
+import encryption.Encryptor;
 import interfaces.ISettingsProvider;
 import javax.swing.JOptionPane;
 import settings.DefaultFileSettingsProvider;
@@ -231,12 +232,18 @@ public class SettingsForm extends javax.swing.JFrame {
 
     private static void testFuncjonalny(){
         //test funkcjonalny
+        Encryptor enc = new encryption.Encryptor();
+        byte[] b = enc.encrypt("pswd".getBytes());
+        char[] ss = new char[b.length];
+        for(int i=0; i<b.length;i++){
+            ss[i]=(char) b[i];
+        }
                 new SettingsForm(null).setVisible(true);
                 Settings s = new Settings();
                 s.setDatabaseAddress("db.addr");
                 s.setFtpAddress("ftp.addr");
                 s.setSenderLogin("em");
-                //s.setSenderPassword("pswd".toCharArray());
+                s.setSenderPassword(ss);
                 s.setSenderEmail("em@");
                 new DefaultFileSettingsProvider("D:/settings.xml").saveSettings(s);
     }

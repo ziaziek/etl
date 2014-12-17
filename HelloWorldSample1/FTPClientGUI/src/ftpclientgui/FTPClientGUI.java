@@ -25,7 +25,7 @@ import settings.DefaultFileSettingsProvider;
  */
 public class FTPClientGUI {
 
-    public static final String SETTINGS_FILENAME = "D:/ftpClientSettings.xml";
+    public static final String SETTINGS_FILENAME = "ftpClientSettings.xml";
     
     
     /**
