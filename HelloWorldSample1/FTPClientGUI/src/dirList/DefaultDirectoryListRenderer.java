@@ -27,7 +27,9 @@ public class DefaultDirectoryListRenderer implements ListCellRenderer<FileListIt
         } else {
             icon = new ImageIcon(DefaultDirectoryListRenderer.class.getResource("file_icon16.png"));
         }
-        return new FileListItem(value.getLabel(), icon);
+        FileListItem it = new FileListItem(value.getLabel(), icon);
+        it.setToolTipText(value.getLabel());
+        return it;
     }
     
 }

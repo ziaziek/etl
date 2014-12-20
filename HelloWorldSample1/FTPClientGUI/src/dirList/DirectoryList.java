@@ -112,7 +112,8 @@ public class DirectoryList extends JComponent implements Serializable, ListSelec
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if(lista.getSelectedValue() instanceof FileListItem){
+        if(lista.getSelectedValue() instanceof FileListItem && canChangeDirectory){
+            canChangeDirectory=false;
             updateCurrentPath((FileListItem)lista.getSelectedValue());
             for(ListSelectionListener l: selectionListeners){
                 l.valueChanged(new ListSelectionEvent(this, e.getFirstIndex(), e.getLastIndex(), e.getValueIsAdjusting()));
