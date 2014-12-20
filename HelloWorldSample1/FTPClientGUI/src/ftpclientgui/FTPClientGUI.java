@@ -16,6 +16,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import settings.DefaultFileSettingsProvider;
 
@@ -50,6 +51,9 @@ public class FTPClientGUI {
                         mw.setVisible(true);
                     } catch (IOException | FTPManagerInitializationException ex) {
                         Logger.getLogger(FTPClientGUI.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "FTP Manager could not be initialised. Check settings.", "Initialization", JOptionPane.ERROR_MESSAGE);
+                        SettingsForm frm = new SettingsForm(new DefaultFileSettingsProvider(SETTINGS_FILENAME));
+                        frm.setVisible(true);
                     }
                 }
                 

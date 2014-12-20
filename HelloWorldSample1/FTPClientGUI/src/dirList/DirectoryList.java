@@ -28,6 +28,10 @@ public class DirectoryList extends JComponent implements Serializable, ListSelec
     
     private HashSet<ListSelectionListener> selectionListeners;
     
+    private boolean canChangeDirectory;
+    
+    private String initialDir = null;
+    
     private final JScrollPane scroll ;
     
     private final JList lista;
@@ -52,11 +56,13 @@ public class DirectoryList extends JComponent implements Serializable, ListSelec
     public void setListData(Object[] data){
         lista.setListData(data);
         this.validate();
+        canChangeDirectory=true;
     }
     
     public void InitialCurrentFolderPath(String p){
         if(currentFolderPath==null){
             currentFolderPath=p;
+            initialDir=p;
         }
     }
     
@@ -76,11 +82,16 @@ public class DirectoryList extends JComponent implements Serializable, ListSelec
         if(item.getType()==FileListItemTypes.DIRECTORY){
                 if(item.getLabel().equals("..")){
                     //go up
-                    currentFolderPath = currentFolderPath.substring(0, currentFolderPath.lastIndexOf("/")-1);
+                    String[] pathParts=currentFolderPath.split("/");
+                    currentFolderPath=initialDir;
+                    for(int i=1; i<pathParts.length-1;i++){
+                        currentFolderPath+=pathParts[i]+"/";
+                    }
                 } else {
                     //add another level
                    currentFolderPath+=item.getLabel()+"/";
                 }
+                canChangeDirectory=false;
             }
     }
     

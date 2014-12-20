@@ -6,6 +6,7 @@
 package ftpclientgui;
 
 import dirList.FileListItem;
+import dirList.FileListItemTypes;
 import dirList.IFileListItemAdapter;
 import ftpclient.FTPManager;
 import ftpclient.FTPManagerEvent;
@@ -386,6 +387,7 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
                 labStatus.setText("Logged In");
                 labLocation.setText(mngr.getHomeDirectory());
                 updateDirFilesList();
+                dirList.InitialCurrentFolderPath("/");
             } else {
                 labStatus.setText("Not logged in");
             }
@@ -401,15 +403,16 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
                 }
                 FTPFile[] fs = mngr.getCurrentDirectoryFilesList();
                 FTPFile[] ds = mngr.getCurrentDirectoryStructure();
-                FileListItem[] fsitem = new FileListItem[ds.length+fs.length];
+                FileListItem[] fsitem = new FileListItem[ds.length+fs.length+1];
+                //allow for navigation directory ..
+                fsitem[0] = new FileListItem("..", FileListItemTypes.DIRECTORY);
                 for(int i=0; i<ds.length;i++){
-                    fsitem[i] = fsAdapter.getFileListItem(ds[i]);
+                    fsitem[i+1] = fsAdapter.getFileListItem(ds[i]);
                 }
                 for(int i=0; i<fs.length;i++){
-                    fsitem[i+ds.length]=fsAdapter.getFileListItem(fs[i]);
+                    fsitem[i+ds.length+1]=fsAdapter.getFileListItem(fs[i]);
                 }
                 dirList.setListData(fsitem);
-                
                 dirList.revalidate();
             }
         } catch (IOException ex) {
@@ -466,7 +469,15 @@ public class MainWindow extends javax.swing.JFrame implements IFTPManagerListene
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if( e.getSource().equals(dirList)){
-            this.labLocation.setText(dirList.getCurrentFolderPath());
+            try {
+                //try to change the folder in FTPManager
+                if(mngr!=null && mngr.changeDirectory(dirList.getCurrentFolderPath())){
+                   this.labLocation.setText(dirList.getCurrentFolderPath()); 
+                   updateDirFilesList();
+                }      
+            } catch (IOException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }

@@ -23,6 +23,9 @@ public class LoginForm extends javax.swing.JDialog {
         initComponents();
         setModal(true);
         this.mngr=mngr;
+        //TODO: REMOVE! This is for testing only
+        txtUsername.setText("asia.klich@gmail.com");
+        txtPassword.setText("derek");
     }
 
     /**

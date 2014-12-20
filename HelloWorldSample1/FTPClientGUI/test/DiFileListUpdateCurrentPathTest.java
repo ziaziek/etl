@@ -63,14 +63,15 @@ public class DiFileListUpdateCurrentPathTest {
         df.InitialCurrentFolderPath("/");
         df.update(item);
         Assert.assertEquals("/", df.getCurrentFolderPath());
-        item = new FileListItem("D", FileListItemTypes.DIRECTORY);
+        item = new FileListItem("DF", FileListItemTypes.DIRECTORY);
+        FileListItem item1 = new FileListItem("EF", FileListItemTypes.DIRECTORY);
         df.update(item);
-        Assert.assertEquals("/D/", df.getCurrentFolderPath());
-        df.update(item);
-        Assert.assertEquals("/D/D/", df.getCurrentFolderPath());
+        Assert.assertEquals("/DF/", df.getCurrentFolderPath());
+        df.update(item1);
+        Assert.assertEquals("/DF/EF/", df.getCurrentFolderPath());
         item = new FileListItem("..", FileListItemTypes.DIRECTORY);
         df.update(item);
-        Assert.assertEquals("/D/", df.getCurrentFolderPath());
+        Assert.assertEquals("/DF/", df.getCurrentFolderPath());
     }
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
