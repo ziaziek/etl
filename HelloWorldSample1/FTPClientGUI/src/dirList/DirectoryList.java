@@ -9,7 +9,6 @@ import java.awt.BorderLayout;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
-import java.util.HashSet;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -26,7 +25,7 @@ public class DirectoryList extends JComponent implements Serializable, ListSelec
     
     private PropertyChangeSupport propertySupport = null;
     
-    private HashSet<ListSelectionListener> selectionListeners;
+    private ListSelectionListener selectionListener;
     
     private boolean canChangeDirectory;
     
@@ -43,7 +42,6 @@ public class DirectoryList extends JComponent implements Serializable, ListSelec
     }
     
     public DirectoryList() {
-        selectionListeners= new HashSet<>();
         lista = new JList();
         scroll = new JScrollPane(lista);
         lista.addListSelectionListener(this);
@@ -75,7 +73,7 @@ public class DirectoryList extends JComponent implements Serializable, ListSelec
     }
     
     public void addSelectionListener(ListSelectionListener listener){
-        selectionListeners.add(listener);
+        selectionListener=listener;
     }
     
     protected void updateCurrentPath(FileListItem item){
@@ -115,8 +113,8 @@ public class DirectoryList extends JComponent implements Serializable, ListSelec
         if(lista.getSelectedValue() instanceof FileListItem && canChangeDirectory){
             canChangeDirectory=false;
             updateCurrentPath((FileListItem)lista.getSelectedValue());
-            for(ListSelectionListener l: selectionListeners){
-                l.valueChanged(new ListSelectionEvent(this, e.getFirstIndex(), e.getLastIndex(), e.getValueIsAdjusting()));
+            if(selectionListener!=null){
+                selectionListener.valueChanged(new ListSelectionEvent(this, e.getFirstIndex(), e.getLastIndex(), e.getValueIsAdjusting()));
             }
         }
     }
