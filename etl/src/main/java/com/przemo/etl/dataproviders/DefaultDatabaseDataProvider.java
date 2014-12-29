@@ -5,10 +5,12 @@
  */
 package com.przemo.etl.dataproviders;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.przemo.etl.interfaces.IDataMapper;
 import com.przemo.etl.interfaces.IDataProvider;
 import database.DbConnector;
+import java.sql.ResultSet;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -66,7 +68,26 @@ public class DefaultDatabaseDataProvider implements IDataProvider{
 
     @Override
     public Table readData() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Table t = HashBasedTable.create();
+
+        if (connector != null && tableName != null) {
+            try {
+                ResultSet res = connector.query("select * from " + tableName);
+                int cols = res.getMetaData().getColumnCount();
+
+                for (int i = 0; i < cols; i++) {
+                    int counter = 0;
+                    while (res.next()) {
+                        t.put(counter, res.getMetaData().getColumnName(i), res.getObject(i));
+                        counter++;
+                    }
+                }
+
+            } catch (Exception ex) {
+                Logger.getLogger(DefaultDatabaseDataProvider.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return t;
     }
     
     protected String prepareMappedQuery(IDataMapper mapper, Table Data){
