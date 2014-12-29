@@ -5,16 +5,16 @@
  */
 package com.przemo.etl.interfaces;
 
-import com.google.common.collect.Table;
+import java.util.Map;
 
 /**
  *
  * @author Przemo
  */
-public interface IDataProvider {
+public interface IDataMapper {
     
-    boolean saveData(Table Data);
+    void setMapping(Map<String, String> sourceDestinationMap);
     
-    Table readData();
+    Map<String, String> getMapping();
     
 }

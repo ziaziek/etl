@@ -5,14 +5,14 @@
  */
 package com.przemo.etl.dataproviders;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.przemo.etl.interfaces.IDataProvider;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,18 +44,30 @@ public class CSVDataProvider extends FileDataProvider implements IDataProvider{
             wr.write("\n");
     }
     
+    /**
+     * Saves data to a CSV file. If no headers were provided, default ones are created, if previously defined to include headers.
+     * @param Data
+     * @return 
+     */
     @Override
-    public boolean saveData(Iterable Data) {
+    public boolean saveData(Table Data) {
         FileWriter wr=null;
         try {
              wr = new FileWriter(file);
-             if(dh && headers!=null){
+             if(dh){
+                 if(headers==null){
+                     headers = defaultHeaders(Data.columnKeySet().size());
+                 }
                  writeSeparatedData(wr, headers);
              }
-            for(Object o: Data){
-                if(o instanceof String[]){
-                    writeSeparatedData(wr, (String[])o);
-                }               
+            for(Object r: Data.rowKeySet()){
+                String[] w = new String[Data.columnKeySet().size()];
+                int i=0;
+                for(Object c: Data.columnKeySet()){
+                    w[i] = (String) Data.get(r, c);
+                    i++;
+                } 
+                writeSeparatedData(wr, w);
             }
             wr.flush();
             return true;
@@ -74,27 +86,33 @@ public class CSVDataProvider extends FileDataProvider implements IDataProvider{
     }
 
     /**
-     *
+     * Reads data from a given file. Headers array gets populated either with default ones or with read in from the file, if so requested.
      * @return
      * @throws Exception
      */
     @Override
-    public Iterable readData(){
-        List<String[]> data = new ArrayList();
+    public Table readData(){
+        Table data = HashBasedTable.create();
         if(file.exists() && file.canRead()){
             try {
                 BufferedReader r = new BufferedReader(new FileReader(file));
                 String line;
+                boolean dhReadIn=false;
+                int rowNumber=0;
                 while((line=r.readLine())!=null){
                     String[] lineArray =line.split(sep);
-                    if( data.size()>0 && lineArray.length!=data.get(0).length){
-                        throw new Exception ("Incompatible data lengths!");
+                    if(! dhReadIn){
+                        if(dh){
+                            headers=lineArray;
+                        } else{
+                            headers = defaultHeaders(lineArray.length);
+                        }
+                        dhReadIn=true;
+                    } else {
+                        for(int c=0; c<lineArray.length;c++){
+                            data.put(rowNumber, headers[c], lineArray[c]);
+                        }
                     }
-                    data.add(lineArray);
-                }
-                if(dh){
-                    headers = data.get(0);
-                    data.remove(0);
                 }
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(CSVDataProvider.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,6 +124,14 @@ public class CSVDataProvider extends FileDataProvider implements IDataProvider{
             
         }
         return data;
+    }
+    
+    protected String[] defaultHeaders(int length){
+        String[] r = new String[length];
+        for(int i=0; i<length; i++){
+            r[i]="Column "+ i;
+        }
+        return r;
     }
     
 }

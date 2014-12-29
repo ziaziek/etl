@@ -6,6 +6,7 @@ package transformers;
  * and open the template in the editor.
  */
 
+import helpers.SimpleTestSample;
 import com.google.common.collect.Table;
 import com.przemo.etl.transformations.AddFieldTransformation;
 import junit.framework.Assert;
