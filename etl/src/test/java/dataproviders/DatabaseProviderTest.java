@@ -9,7 +9,7 @@ import com.google.common.collect.Table;
 import com.przemo.etl.dataproviders.DefaultDatabaseDataProvider;
 import com.przemo.etl.dataproviders.SimpleMapper;
 import com.przemo.etl.interfaces.IDataMapper;
-import database.DbConnector;
+import com.przemo.database.DbConnector;
 import helpers.SimpleTestSample;
 import java.util.HashMap;
 import java.util.LinkedHashMap;

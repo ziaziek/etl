@@ -113,6 +113,7 @@ public class CSVDataProvider extends FileDataProvider implements IDataProvider{
                             data.put(rowNumber, headers[c], lineArray[c]);
                         }
                     }
+                    rowNumber++;
                 }
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(CSVDataProvider.class.getName()).log(Level.SEVERE, null, ex);

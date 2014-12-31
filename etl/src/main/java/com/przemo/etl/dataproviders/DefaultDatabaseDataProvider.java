@@ -9,7 +9,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.przemo.etl.interfaces.IDataMapper;
 import com.przemo.etl.interfaces.IDataProvider;
-import database.DbConnector;
+import com.przemo.database.DbConnector;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.LinkedHashSet;
