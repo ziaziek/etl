@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package com.przemo.etl.transformations.expressions;
 
 import com.google.common.collect.Table;
@@ -14,35 +15,45 @@ import java.util.Map;
 
 /**
  *
- * @author Przemo
+ * @author Przemysław
  */
-public class SimpleColumnsEvaluator extends SimpleNumberEvaluator implements IEvaluator{
+public class SimpleNumberEvaluator implements IEvaluator{
+    protected Object currentDoubleValue;
+
+    protected String exp;
     
-    private Object currentColumnValue;
-    private Table data;
-    private Object row;
-      
-    public SimpleColumnsEvaluator(String expression){
-        this.exp=ONPConverter.code(exp);            
+    public SimpleNumberEvaluator(String expression){
+        this.exp=ONPConverter.code(exp);
+    }
+    
+    public SimpleNumberEvaluator(){
+        
     }
     
     @Override
-    public Object evaluate(Object... params) {
-        currentColumnValue=null;
+    public Object evaluate(Object... args) {
         currentDoubleValue=null;
-        if(params[0] instanceof Table){
-            data = (Table)params[0];
-            row=params[1];
-           return ONPConverter.decode(exp, this); 
-        } else {
+        if(exp!=null){
+            return ONPConverter.decode(exp, this);
+        } else{
             return null;
-        }       
+        }
     }
 
 
     @Override
     public boolean isValue(String val) {
-        return (super.isValue(val) || (val.contains("[") && val.contains("]") && (currentColumnValue=data.get(row, val.replace("\\[", "").replace("\\]", "")))!=null));
+        return ((currentDoubleValue= Doubles.tryParse(val))!=null);
+    }
+
+    @Override
+    public boolean isOperator(String op) {
+        return op.length()==1;
+    }
+
+    @Override
+    public boolean isFunction(String f) {
+        return f.length()>1;
     }
 
     @Override
@@ -50,7 +61,8 @@ public class SimpleColumnsEvaluator extends SimpleNumberEvaluator implements IEv
         if(currentDoubleValue!=null){
             return currentDoubleValue;
         } else {
-            return currentColumnValue;
+            return null;
         }
     }
+    
 }

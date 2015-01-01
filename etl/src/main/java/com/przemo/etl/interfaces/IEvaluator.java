@@ -13,7 +13,7 @@ import com.google.common.collect.Table;
  */
 public interface IEvaluator {
     
-    Object evaluate(Table data, Object row);
+    Object evaluate(Object... params);
     
     boolean isValue(String val);
     

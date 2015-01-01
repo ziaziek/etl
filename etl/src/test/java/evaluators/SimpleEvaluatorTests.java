@@ -5,7 +5,10 @@
  */
 package evaluators;
 
+import com.google.common.collect.Table;
+import com.przemo.etl.interfaces.IEvaluator;
 import com.przemo.etl.transformations.expressions.SimpleColumnsEvaluator;
+import com.przemo.etl.transformations.expressions.SimpleNumberEvaluator;
 import com.przemo.etl.transformations.expressions.onp.ONPConverter;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -68,5 +71,11 @@ public class SimpleEvaluatorTests {
         Assert.assertEquals("2", n.substring(0, 1));
         Assert.assertEquals(7, n.split(" ").length);
         
+    }
+    
+    @Test
+    public void decodeTest(){
+        String s = "2 1 2 + sin *";
+        Assert.assertEquals(2*Math.sin(3), ONPConverter.decode(s, new SimpleNumberEvaluator()));
     }
 }

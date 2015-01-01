@@ -75,7 +75,7 @@ public class ONPConverter {
         return ret.replaceAll("\\s{2,}", " ").trim();
     }
     
-        private static final Map<String, Integer> funcNoArgs = new HashMap<String, Integer>(){{
+        public static final Map<String, Integer> funcNoArgs = new HashMap<String, Integer>(){{
         put("sin", 1);
         put("cos", 1);
         put("tan", 1);
