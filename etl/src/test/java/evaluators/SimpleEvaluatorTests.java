@@ -5,9 +5,9 @@
  */
 package evaluators;
 
-import com.google.common.collect.Table;
 import com.przemo.etl.interfaces.IEvaluator;
 import com.przemo.etl.transformations.expressions.SimpleColumnsEvaluator;
+import com.przemo.etl.transformations.expressions.SimpleNumberAndStringEvaluator;
 import com.przemo.etl.transformations.expressions.SimpleNumberEvaluator;
 import com.przemo.etl.transformations.expressions.onp.ONPConverter;
 import org.junit.After;
@@ -63,19 +63,35 @@ public class SimpleEvaluatorTests {
     
     @Test
     public void onpTest(){
-        String s = "2*sin(x+b, 2)";
+        String s = "((2+7)/3+(14-3)*4)/2";
         String n = ONPConverter.code(s);
         Assert.assertNotNull(n);
         System.out.println(n);
         Assert.assertTrue(n.length()>0);
         Assert.assertEquals("2", n.substring(0, 1));
-        Assert.assertEquals(7, n.split(" ").length);
-        
+        Assert.assertEquals(13, n.split(" ").length);
+        Assert.assertEquals("2 7 + 3 / 14 3 - 4 * + 2 /", n);
+        s="substr('abc',0,1)";
+        n = ONPConverter.code(s);
+        Assert.assertEquals("'abc'", n.split(" ")[0]);
+    }
+    
+    @Test
+    public void numberAndStringEvaluatorTest(){
+        String s = "'abc'";
+        Assert.assertTrue(new SimpleNumberAndStringEvaluator().isValue(s));
     }
     
     @Test
     public void decodeTest(){
         String s = "2 1 2 + sin *";
-        Assert.assertEquals(2*Math.sin(3), ONPConverter.decode(s, new SimpleNumberEvaluator()));
+        IEvaluator eval = new SimpleNumberEvaluator();
+        Assert.assertEquals(2*Math.sin(3), ONPConverter.decode(s, eval));
+        s = "2 3 + 5 *";
+        Assert.assertEquals(25.0, ONPConverter.decode(s, eval));
+        s = "2 7 + 3 / 14 3 - 4 * + 2 /";
+        Assert.assertEquals(23.5, ONPConverter.decode(s, eval));
+        s = "'abc' 0 2 substr";
+        Assert.assertEquals("ab", ONPConverter.decode(s, new SimpleNumberAndStringEvaluator()));
     }
 }

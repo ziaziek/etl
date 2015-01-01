@@ -18,7 +18,7 @@ import java.util.Map;
  * @author Przemysław
  */
 public class SimpleNumberEvaluator implements IEvaluator{
-    protected Object currentDoubleValue;
+    protected Object currentValue;
 
     protected String exp;
     
@@ -32,7 +32,7 @@ public class SimpleNumberEvaluator implements IEvaluator{
     
     @Override
     public Object evaluate(Object... args) {
-        currentDoubleValue=null;
+        currentValue=null;
         if(exp!=null){
             return ONPConverter.decode(exp, this);
         } else{
@@ -43,7 +43,7 @@ public class SimpleNumberEvaluator implements IEvaluator{
 
     @Override
     public boolean isValue(String val) {
-        return ((currentDoubleValue= Doubles.tryParse(val))!=null);
+        return ((currentValue= Doubles.tryParse(val))!=null);
     }
 
     @Override
@@ -58,8 +58,8 @@ public class SimpleNumberEvaluator implements IEvaluator{
 
     @Override
     public Object getValue(String val) {
-        if(currentDoubleValue!=null){
-            return currentDoubleValue;
+        if(currentValue!=null){
+            return currentValue;
         } else {
             return null;
         }

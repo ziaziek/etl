@@ -6,30 +6,27 @@
 package com.przemo.etl.transformations.expressions;
 
 import com.google.common.collect.Table;
-import com.google.common.primitives.Doubles;
 import com.przemo.etl.interfaces.IEvaluator;
 import com.przemo.etl.transformations.expressions.onp.ONPConverter;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
  * @author Przemo
  */
-public class SimpleColumnsEvaluator extends SimpleNumberEvaluator implements IEvaluator{
+public class SimpleColumnsEvaluator extends SimpleNumberAndStringEvaluator implements IEvaluator{
     
     private Object currentColumnValue;
     private Table data;
     private Object row;
       
     public SimpleColumnsEvaluator(String expression){
-        this.exp=ONPConverter.code(exp);            
+        super(expression);           
     }
     
     @Override
     public Object evaluate(Object... params) {
         currentColumnValue=null;
-        currentDoubleValue=null;
+        currentValue=null;
         if(params[0] instanceof Table){
             data = (Table)params[0];
             row=params[1];
@@ -47,8 +44,8 @@ public class SimpleColumnsEvaluator extends SimpleNumberEvaluator implements IEv
 
     @Override
     public Object getValue(String val) {
-        if(currentDoubleValue!=null){
-            return currentDoubleValue;
+        if(currentValue!=null){
+            return currentValue;
         } else {
             return currentColumnValue;
         }

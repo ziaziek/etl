@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  */
 public class ONPConverter {
     
-    private static final Pattern p = Pattern.compile("(\\+)|(\\-)|(\\^)|(\\*)|(\\/)|(\\(|\\))|((sin|ln|cos|tan)\\()|(\\,)");
+    private static final Pattern p = Pattern.compile("(\\+)|(\\-)|(\\^)|(\\*)|(\\/)|(\\(|\\))|((sin|ln|cos|tan|substr)\\()|(\\,)");
         
     public static String code(String expr){
         expr = expr.replaceAll(" ", "");
@@ -39,7 +39,13 @@ public class ONPConverter {
             } else {
                 //the symbol is an operator
                 switch (m.group()) {
-                    case ")": case ",":
+                    case ",":if (!s.isEmpty()) {
+                            while (!s.isEmpty() && !(s.peek()).equals("(")) {
+                                ret += s.pop() + " ";
+                            }
+                        }
+                        break;
+                    case ")": 
                         if (!s.isEmpty()) {
                             String op;
                             while (!s.isEmpty() && !(op = s.pop()).equals("(")) {
@@ -97,16 +103,16 @@ public class ONPConverter {
                         Object x=s.pop();
                         Object y = s.pop();
                         if(x instanceof Number && y instanceof Number){
-                            s.push( evaluateNumbers(elements[i], (Double)x, (Double)y));
+                            s.push( evaluateNumbers(elements[i], (Double)y, (Double)x));
                         } else {
-                            s.push( evaluateString(elements[i], String.valueOf(x), String.valueOf(y)));
+                            s.push( evaluateString(elements[i], String.valueOf(y), String.valueOf(x)));
                         }                        
                     } else if(eval.isFunction(elements[i])){
                         //this is a function
                         if(funcNoArgs.containsKey(elements[i])){
                            Object[] args = new Object[funcNoArgs.get(elements[i])];
                            for(int k=0; k< args.length;k++){
-                               args[i]=s.pop();
+                               args[k]=s.pop();
                            }
                         s.push(evaluateFunction (elements[i], args));
                         } else {
@@ -143,7 +149,7 @@ public class ONPConverter {
             case "cos": return Math.cos((double) args[0]);
             case "tan": return Math.tan((double) args[0]);
             case "ln":return Math.log((double) args[0]);
-            case "substring": return (String.valueOf(args[0]).substring((Integer)args[1], (Integer)args[2]));
+            case "substr": return (String.valueOf(args[2]).substring(((Double)args[1]).intValue(), ((Double)args[0]).intValue()));
             default:
                 return null;
         }
