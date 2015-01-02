@@ -20,18 +20,23 @@ import java.util.Random;
 public class SimpleTestSample {
     
     
-        public static Table getTable(){
-        Table<Integer, String, Object> t =  HashBasedTable.create();
+    public static Table getTable(int randomRows) {
+        Table<Integer, String, Object> t = HashBasedTable.create();
         t.put(0, "A1", 1);
         t.put(1, "A1", 3);
         t.row(0).put("A2", 5);
         t.put(0, "A3", 12);
         Random r = new Random();
-        for(int i=2; i<10000;  i++){
+        for (int i = 2; i < randomRows; i++) {
             t.put(i, "A1", r.nextInt(500));
             t.put(i, "A2", r.nextInt(255));
         }
         return t;
+    }
+        
+        public static Table getTable(){
+            return getTable(10000);
+        
     }
 
 }
