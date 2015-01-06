@@ -54,10 +54,13 @@ public abstract class AbstractGapsFiller extends AbstractTransformer {
     public void transform() {
         SortedMap<Integer, Object> m = new TreeMap(new ValueComparator(data.column(this.gapColumn)));
         m.putAll(data.column(this.gapColumn));
+        m.put(3, "AAA");
         Integer previousKey = null;
         Set<Integer> currentKeys = m.keySet();
-        for (Integer rowNumber : currentKeys) {
-            if (previousKey != null && isGapped(m.get(rowNumber), m.get(previousKey))) {
+        
+        for (Integer rowNumber : currentKeys) {           
+            
+            if (previousKey != null && isGapped(data.get(previousKey, this.gapColumn), data.get(rowNumber, this.gapColumn))) {
                 fillGap(previousKey, rowNumber, data);
             }
             previousKey = rowNumber;
@@ -70,5 +73,11 @@ public abstract class AbstractGapsFiller extends AbstractTransformer {
 
     protected abstract boolean isGapped(Object get, Object get0);
 
+    /**
+     * Fills gaps in the given table between the two row keys in all columns.
+     * @param previousKey
+     * @param rowNumber
+     * @param data 
+     */
     protected abstract void fillGap(Integer previousKey, Integer rowNumber, Table<Integer, Object, Object> data);
 }
