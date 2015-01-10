@@ -6,6 +6,7 @@
 package com.przemo.etl.transformations;
 
 import com.google.common.base.Function;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -45,19 +46,25 @@ public class MovingAverageTransformation extends ColumnTransformation {
                 if(f instanceof Table && ((Table)f).containsColumn(column)){
                     Table t = (Table)f;                 
                     if(t.column(column).size()>=period){
-                        calculateMovingAverage(t);
+                        Table tr =calculateMovingAverage(t, period, column);
+                        if(tr!=null){
+                           t.putAll(tr); 
+                        }    
                     }
                 }
                 return f;
-            }           
-
-            protected void calculateMovingAverage(Table t) {
+            }                   
+        };
+    }
+    
+    protected Table calculateMovingAverage(Table table, int period, String column) {
+                Table t = HashBasedTable.create();
                 int ix = 0;
                 double s0=0; double prev=0;
                 boolean firstRound=true;
                 Queue<Double> sq = new ArrayBlockingQueue(period);
-                for (Object r : t.rowKeySet()) {
-                    sq.offer((Double) t.get(r, column));
+                for (Object r : table.rowKeySet()) {
+                    sq.offer((Double) table.get(r, column));
                     ix++;
                     if (ix >= period) {
                         if (firstRound) {
@@ -66,16 +73,16 @@ public class MovingAverageTransformation extends ColumnTransformation {
                             }
                             firstRound=false;
                         } else {
-                            s0+=((Double) t.get(r, column)-prev);
+                            s0+=((Double) table.get(r, column)-prev);
                         }
-                        t.put(r, resuiltingColumnName(period), s0 / period);
+                        t.put(r, resultingColumnName(period), s0 / period);
                         prev = sq.poll();
                     }
                 }
+                return t;
             }
-        };
-    }
-    protected String resuiltingColumnName(int period) {
+    
+    protected String resultingColumnName(int period) {
                 return ResultingColumnName +"("+period+")";
             }
 }
