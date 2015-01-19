@@ -8,11 +8,14 @@ package com.przemo.etl.dataproviders;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.przemo.etl.interfaces.IDataProvider;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,11 +40,14 @@ public class CSVDataProvider extends FileDataProvider implements IDataProvider{
         this.dh = includeDataHeaders;
     }
 
-    private void writeSeparatedData(FileWriter wr, String[] data) throws IOException{
+    private void writeSeparatedData(OutputStream wr, String[] data) throws IOException{
+        StringBuilder sb = new StringBuilder();
             for(String s: (String[])data){
-                    wr.write(s+ sep);
+                sb.append(s).append(sep);
             }
-            wr.write("\n");
+            sb.append("\n");
+            System.out.println("Writing separated data.");
+            wr.write(sb.toString().getBytes());                 
     }
     
     /**
@@ -51,23 +57,38 @@ public class CSVDataProvider extends FileDataProvider implements IDataProvider{
      */
     @Override
     public boolean saveData(Table Data) {
-        FileWriter wr=null;
+        OutputStream wr=null;
         try {
-             wr = new FileWriter(file);
+             wr = new BufferedOutputStream(new FileOutputStream(this.file));
+             
              if(dh){
                  if(headers==null){
-                     headers = defaultHeaders(Data.columnKeySet().size());
+                     headers = defaultHeaders(Data);
                  }
                  writeSeparatedData(wr, headers);
+                 System.out.println("Saved headers.");
              }
+             Set columnsSet = Data.columnKeySet();
+             String[] w = new String[columnsSet.size()];
+            int i; int cint=0;
+            
+            System.out.println("Start saving rows.");
             for(Object r: Data.rowKeySet()){
-                String[] w = new String[Data.columnKeySet().size()];
-                int i=0;
-                for(Object c: Data.columnKeySet()){
-                    w[i] = (String) Data.get(r, c);
+                i=0;
+                System.out.println("Saving row no. "+cint);
+                for(Object c: columnsSet){
+                    Object v = Data.get(r, c);
+                    if(v!=null){
+                     w[i] = v.toString();   
+                    }                
                     i++;
                 } 
+                cint++;
+                System.out.println("Writing the row to the writer stream.");
                 writeSeparatedData(wr, w);
+                if(cint%1000==0){
+                    System.out.println("Saved row no. "+ cint);
+                }
             }
             wr.flush();
             return true;
@@ -131,6 +152,20 @@ public class CSVDataProvider extends FileDataProvider implements IDataProvider{
         String[] r = new String[length];
         for(int i=0; i<length; i++){
             r[i]="Column "+ i;
+        }
+        return r;
+    }
+    
+    protected String[] defaultHeaders(Table data){
+        String[] r = new String[data.columnKeySet().size()];
+        int i=0;
+        for(Object c : data.columnKeySet()){
+            if (c instanceof String){
+                r[i]=(String)c;
+            } else {
+                r[i]="Column "+ i;
+            }
+            i++;
         }
         return r;
     }

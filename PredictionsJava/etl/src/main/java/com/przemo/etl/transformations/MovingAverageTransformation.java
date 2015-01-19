@@ -8,8 +8,6 @@ package com.przemo.etl.transformations;
 import com.google.common.base.Function;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  *
@@ -19,6 +17,8 @@ public class MovingAverageTransformation extends ColumnTransformation {
     
     protected String ResultingColumnName = "MovAvg";
 
+    protected String calculatedColumn;
+    
     public String getResultingColumnName() {
         return ResultingColumnName;
     }
@@ -39,6 +39,7 @@ public class MovingAverageTransformation extends ColumnTransformation {
      * @param period 
      */
     public MovingAverageTransformation(final String column, final int period){
+        this.calculatedColumn=column;
         this.transformation = new Function() {
 
             @Override
@@ -58,31 +59,31 @@ public class MovingAverageTransformation extends ColumnTransformation {
     }
     
     protected Table calculateMovingAverage(Table table, int period, String column) {
-                Table t = HashBasedTable.create();
-                int ix = 0;
-                double s0=0; double prev=0;
-                boolean firstRound=true;
-                Queue<Double> sq = new ArrayBlockingQueue(period);
-                for (Object r : table.rowKeySet()) {
-                    sq.offer((Double) table.get(r, column));
-                    ix++;
-                    if (ix >= period) {
-                        if (firstRound) {
-                            for (Double d : sq) {
-                                s0 += d;
-                            }
-                            firstRound=false;
-                        } else {
-                            s0+=((Double) table.get(r, column)-prev);
-                        }
-                        t.put(r, resultingColumnName(period), s0 / period);
-                        prev = sq.poll();
-                    }
+        Table t = HashBasedTable.create();
+        int ix = 0;
+        double s0;
+        int ixCounter = 0;
+        double[] sq = new double[period];
+        String cn = resultingColumnName(period);
+        for (Object r : table.rowKeySet()) {
+            sq[ixCounter] = (double) table.get(r, column) / period;
+            ix++;
+            ixCounter++;
+            if (ix >= period) {
+                s0 = 0;
+                for (double d : sq) {
+                    s0 += d;
                 }
-                return t;
+                t.put(r, cn, s0);
+                if (ixCounter == period) {
+                    ixCounter = 0;
+                }
             }
+        }
+        return t;
+    }
     
     protected String resultingColumnName(int period) {
-                return ResultingColumnName +"("+period+")";
+                return ResultingColumnName +"_"+calculatedColumn+"_("+period+")";
             }
 }
