@@ -7,9 +7,9 @@ package com.przemo.etl.dataproviders;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.przemo.database.DbConnector;
 import com.przemo.etl.interfaces.IDataMapper;
 import com.przemo.etl.interfaces.IDataProvider;
-import com.przemo.database.DbConnector;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -25,9 +25,9 @@ public class DefaultDatabaseDataProvider implements IDataProvider{
     
     protected final String valsReplacer = "$vals$";
     
-    private DbConnector connector;
+    protected DbConnector connector;
 
-    private IDataMapper mapper;
+    protected IDataMapper mapper;
 
     public IDataMapper getMapper() {
         return mapper;
@@ -37,7 +37,7 @@ public class DefaultDatabaseDataProvider implements IDataProvider{
         this.mapper = mapper;
     }
     
-    private final String tableName;
+    protected final String tableName;
     
     public DbConnector getConnector() {
         return connector;
@@ -74,13 +74,12 @@ public class DefaultDatabaseDataProvider implements IDataProvider{
             try {
                 ResultSet res = connector.query("select * from " + tableName);
                 int cols = res.getMetaData().getColumnCount();
-
-                for (int i = 0; i < cols; i++) {
-                    int counter = 0;
-                    while (res.next()) {
-                        t.put(counter, res.getMetaData().getColumnName(i), res.getObject(i));
-                        counter++;
+                int counter = 0;
+                while (res.next()) {
+                    for (int i = 1; i <= cols; i++) {
+                        t.put(counter, res.getMetaData().getColumnName(i), res.getObject(i));                  
                     }
+                    counter++;
                 }
 
             } catch (Exception ex) {
